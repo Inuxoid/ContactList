@@ -76,6 +76,12 @@ function editContact(contact){
 }
 
 function saveContact(contactData) {
+    const form = document.querySelector('#contactForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
     const lastId = getLastId();
     if (contactData.id == null){
         contactData.id = lastId;
@@ -83,6 +89,7 @@ function saveContact(contactData) {
     localStorage.setItem(contactData.id.toString(), JSON.stringify(contactData));
     displayContacts();
     searchContacts();
+    Metro.dialog.close('#contactDialog');
 }
 
 function getLastId() {
