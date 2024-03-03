@@ -49,3 +49,10 @@ html, body {
     font-size: 15pt;
 }
 
+.button.primary.has-contacts {
+    background-color: green; /* Цвет кнопки, если есть контакты */
+}
+
+.button.primary.no-contacts {
+    background-color: blue; /* Цвет кнопки, если контактов нет */
+}

@@ -1,20 +1,38 @@
 const alphabetContainer = document.getElementById('alphabet');
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-alphabet.split('').forEach(letter => {
-    const letterElement = document.createElement('button');
-    letterElement.className = 'button primary';
-    letterElement.textContent = letter;
-    letterElement.addEventListener('click', () => displayContactsByLetter(letter));
-    alphabetContainer.appendChild(letterElement);
-});
 
-document.addEventListener("DOMContentLoaded", function() {
-    displayContacts();
-    document.getElementById("searchInput").addEventListener("input", searchContacts);
-    document.getElementById("saveContactBtn").addEventListener("click", initForm);
-    document.getElementById("deleteContactBtn").addEventListener("click", deleteContact);
-    document.getElementById("deleteContactBtn").hidden = true;
-});
+drawLetters();
+addListeners();
+
+function addListeners() {
+    document.addEventListener("DOMContentLoaded", function () {
+        displayContacts();
+        document.getElementById("searchInput").addEventListener("input", searchContacts);
+        document.getElementById("saveContactBtn").addEventListener("click", initForm);
+        document.getElementById("deleteContactBtn").addEventListener("click", deleteContact);
+        document.getElementById("deleteContactBtn").hidden = true;
+    });
+}
+function drawLetters() {
+    alphabetContainer.innerHTML = "";
+    alphabet.split('').forEach(letter => {
+        const letterElement = document.createElement('button');
+        letterElement.className = 'button primary';
+        if (hasContactsStartingWith(letter)) {
+            letterElement.classList.add('has-contacts'); // Добавляем класс, если есть контакты
+        } else {
+            letterElement.classList.add('no-contacts'); // Добавляем класс, если контактов нет
+        }
+        letterElement.textContent = letter;
+        letterElement.addEventListener('click', () => displayContactsByLetter(letter));
+        alphabetContainer.appendChild(letterElement);
+    });
+}
+
+function hasContactsStartingWith(letter) {
+    const contacts = getContacts();
+    return contacts.some(contact => contact.name.toUpperCase().startsWith(letter));
+}
 
 async function initForm() {
     const lastId = getLastId()
@@ -62,6 +80,7 @@ function deleteContact(){
     window.localStorage.removeItem(document.getElementById("contactId").value);
     displayContacts();
     searchContacts();
+    drawLetters()
 }
 
 function editContact(contact){
@@ -88,6 +107,7 @@ function saveContact(contactData) {
     }
     localStorage.setItem(contactData.id.toString(), JSON.stringify(contactData));
     displayContacts();
+    drawLetters();
     searchContacts();
     Metro.dialog.close('#contactDialog');
 }
@@ -109,9 +129,9 @@ function getContacts() {
 
 function ClearList(){
     const contactsContainer = document.getElementById('contacts');
-    contactsContainer.innerHTML = ''; // Очистка текущего списка контактов
-
+    contactsContainer.innerHTML = '';
     localStorage.clear();
+    drawLetters();
 }
 
 // display section
